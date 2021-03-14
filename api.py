@@ -1,5 +1,7 @@
+import inspect
 from webob import Request, Response
 from parse import parse
+
 
 class AppFactory:
     def __init__(self):
@@ -7,6 +9,9 @@ class AppFactory:
 
 
     def route(self, path):
+
+        assert path not in self.routes, "Route already exists."
+
         def wrapper(handler):
             self.routes[path] = handler
             return handler
@@ -42,6 +47,11 @@ class AppFactory:
         handler, params = self.get_handler(request.path)
 
         if handler:
+            if inspect.isclass(handler):
+                handler = getattr(handler(), request.method.lower(), None)
+                if not handler:
+                    raise AttributeError("Method not allowed", request.method)
+            
             handler(request, response, **params)
         else:
             self.default_response(response)

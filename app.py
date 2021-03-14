@@ -3,7 +3,7 @@ from api import AppFactory
 
 app = AppFactory()
 
-@app.route('/home/')
+@app.route('/home')
 def home(request, response):
     response.text = "Hello from the HOME page"
 
@@ -16,3 +16,8 @@ def about(request, response):
 @app.route('/passdigit/{digit:d}')
 def pass_digit(request, response, digit):
     response.text = str(digit)
+
+@app.route('/movie')
+class MovieEndpoint:
+    def get(self, req, res):
+        res.text = 'HOLABUDDY'
