@@ -1,6 +1,8 @@
 import inspect
 from webob import Request, Response
 from parse import parse
+from requests import Session as RequestsSession
+from wsgiadapter import WSGIAdapter as RequestsWSGIAdapter
 
 
 class AppFactory:
@@ -58,3 +60,8 @@ class AppFactory:
 
         return response
         
+    
+    def test_client(self, base_url='http://testserv'):
+        session = RequestsSession()
+        session.mount(prefix=base_url, adapter=RequestsWSGIAdapter(self))
+        return session
