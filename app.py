@@ -3,6 +3,11 @@ from api import AppFactory
 
 app = AppFactory()
 
+def custom_exception_handler(request, response, exception_cls):
+    response.text = 'Something went wrong. Please try again.'
+
+app.add_exception_handler(custom_exception_handler)
+
 @app.route('/home')
 def home(request, response):
     response.text = "Hello from the HOME page"
