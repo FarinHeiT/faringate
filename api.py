@@ -1,4 +1,6 @@
 import inspect
+import os
+from jinja2 import Environment, FileSystemLoader
 from webob import Request, Response
 from parse import parse
 from requests import Session as RequestsSession
@@ -6,8 +8,10 @@ from wsgiadapter import WSGIAdapter as RequestsWSGIAdapter
 
 
 class AppFactory:
-    def __init__(self):
+    def __init__(self, templates_dir='templates'):
         self.routes = {}
+        self.templates_env = Environment(loader=FileSystemLoader(os.path.abspath(templates_dir)))
+
 
 
     def __call__(self, environ, start_response):
@@ -72,5 +76,9 @@ class AppFactory:
         return session
 
 
+    def template(self, template_name, context=None):
+        context = context if context else {}
+
+        return self.templates_env.get_template(template_name).render(**context)
     
 

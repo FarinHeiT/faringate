@@ -21,3 +21,10 @@ def pass_digit(request, response, digit):
 class MovieEndpoint:
     def get(self, req, res):
         res.text = 'HOLABUDDY'
+
+
+@app.route('/welcome')
+def welcome(req, res):
+    res.body = app.template('index.html', context={'framework': 'faringate', 'title': 'My Very First Framework'}).encode()
+
+    
