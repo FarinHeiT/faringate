@@ -10,16 +10,6 @@ class AppFactory:
         self.routes = {}
 
 
-    def route(self, path):
-
-        assert path not in self.routes, "Route already exists."
-
-        def wrapper(handler):
-            self.routes[path] = handler
-            return handler
-
-        return wrapper
-
     def __call__(self, environ, start_response):
         
         request = Request(environ)
@@ -27,6 +17,21 @@ class AppFactory:
         response = self.handle_request(request)
 
         return response(environ, start_response)
+
+
+    def add_route(self, route, handler):
+        assert route not in self.routes, "Route already exists"
+        
+        self.routes[route] = handler
+
+
+    def route(self, path):
+        def wrapper(handler):
+            self.add_route(path, handler)
+            return handler
+
+        return wrapper
+
 
 
     def default_response(self, response):
@@ -65,3 +70,7 @@ class AppFactory:
         session = RequestsSession()
         session.mount(prefix=base_url, adapter=RequestsWSGIAdapter(self))
         return session
+
+
+    
+

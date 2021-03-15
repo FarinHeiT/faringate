@@ -67,3 +67,14 @@ def test_class_based_view_method_not_allowed(app_factory, client):
 
     with pytest.raises(AttributeError):
         client.get("http://testserv/cbv_no_get")
+
+
+def test_alternative_route(app_factory, client):
+    response = "Alternative Way Of Creating Routes"
+
+    def home(req, res):
+        res.text = response
+    
+    app_factory.add_route('/alter', home)
+
+    assert client.get("http://testserv/alter").text == response
