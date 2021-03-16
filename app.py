@@ -1,7 +1,18 @@
 from api import AppFactory
-
+from middleware import Middleware
 
 app = AppFactory()
+
+
+class TestMiddleware(Middleware):
+    def process_request(self, req):
+        print("Processing request", req.url)
+
+
+    def process_response(self, req, res):
+        print("Processing response", req.url)
+
+app.add_middleware(TestMiddleware)
 
 def custom_exception_handler(request, response, exception_cls):
     response.text = 'Something went wrong. Please try again.'
